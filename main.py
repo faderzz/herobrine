@@ -30,7 +30,6 @@ def scan_port(ip, port):
         if result == 0:
             print(f"Port {port} is open on {ip}")
             add_server(ip, port)
-            send_webhook(ip, port)
         sock.close()
     except socket.error:
         pass
@@ -58,6 +57,19 @@ if __name__ == "__main__":
     for subnet in subnets:
         scan_subnet(subnet, port)
 
+def fullScan():
+    # Retrieve subnets from the database
+    conn = sqlite3.connect('subnets.db')
+    c = conn.cursor()
+    c.execute("SELECT subnet FROM subnets")
+    subnets = [row[0] for row in c.fetchall()]
+    conn.close()
+
+    port = 25565  # Default Minecraft server port
+
+    for subnet in subnets:
+        scan_subnet(subnet, port)
+
 ### Database functions
 # Create database if it doesn't exist
 def create_database():
@@ -73,8 +85,12 @@ def add_server(ip, port):
     conn = sqlite3.connect('servers.db')
     c = conn.cursor()
     timestamp = int(time.time())
-    c.execute("INSERT INTO servers VALUES (?, ?, ?)", (ip, port, timestamp))
-    conn.commit()
+    # Check if server already exists in database
+    c.execute("SELECT * FROM servers WHERE ip=? AND port=?", (ip, port))
+    if c.fetchone() is None:
+        c.execute("INSERT INTO servers VALUES (?, ?, ?)", (ip, port, timestamp))
+        send_webhook(ip, port)
+        conn.commit()
     conn.close()
 
 # Send embed to Discord webhook

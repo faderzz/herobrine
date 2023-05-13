@@ -5,6 +5,8 @@ import os
 import dotenv
 import time
 
+from main import fullScan
+
 # Variables
 dotenv.load_dotenv()
 webhook_url = os.getenv('WEBHOOK_URL')
@@ -70,6 +72,46 @@ async def list_subnets(ctx: commands.Context):
         embed.add_field(name=f'Subnet {subCount}', value=subnet, inline=True)
     await ctx.send(embed=embed)
 
+### listServers command
+@client.command(name='listServers', description='List all servers in the database')
+async def list_servers(ctx: commands.Context):
+    # Retrieve servers from the database
+    conn = sqlite3.connect('servers.db')
+    c = conn.cursor()
+    c.execute("SELECT ip, port FROM servers")
+    servers = [row for row in c.fetchall()]
+    conn.close()
+    # Create inline embed with all servers
+    embed = discord.Embed(title='Servers', description='All servers in the database', color=0x00ff00)
+    serverCount = 0
+    for server in servers:
+        serverCount += 1
+        embed.add_field(name=f'Server {serverCount}', value=f'IP: {server[0]}\nPort: {server[1]}', inline=True)
+    await ctx.send(embed=embed)
+
+### fullScan command
+@client.command(name='fullScan', description='Scan all subnets in the database')
+async def full_scan(ctx: commands.Context):
+    # Count the number of servers in the database
+    conn = sqlite3.connect('servers.db')
+    c = conn.cursor()
+    c.execute("SELECT ip, port FROM servers")
+    servers = [row for row in c.fetchall()]
+    conn.close()
+    serverCount = len(servers)
+    # Scan all subnets in the database
+    fullScan()
+    # New count of servers in the database
+    conn = sqlite3.connect('servers.db')
+    c = conn.cursor()
+    c.execute("SELECT ip, port FROM servers")
+    servers = [row for row in c.fetchall()]
+    conn.close()
+    newServerCount = len(servers)
+    # Calculate the number of new servers
+    newServers = newServerCount - serverCount
+    # Send message to Discord
+    await ctx.send(f'Full scan completed :white_check_mark:\nNew servers found: {newServers}')
 
 # Run the client
 client.run(token)
