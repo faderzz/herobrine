@@ -46,12 +46,13 @@ def scan_subnet(subnet, port):
 
 # Main function
 if __name__ == "__main__":
-    subnets = [
-        '192.168.0.0/24',
-        '10.0.0.0/16',
-        '172.16.0.0/20',
-        '129.151.94.0/30'
-    ]
+    # Retrieve subnets from the database
+    conn = sqlite3.connect('subnets.db')
+    c = conn.cursor()
+    c.execute("SELECT subnet FROM subnets")
+    subnets = [row[0] for row in c.fetchall()]
+    conn.close()
+
     port = 25565  # Default Minecraft server port
 
     for subnet in subnets:
