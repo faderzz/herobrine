@@ -89,7 +89,7 @@ def add_server(ip, port):
     c.execute("SELECT * FROM servers WHERE ip=? AND port=?", (ip, port))
     if c.fetchone() is None:
         c.execute("INSERT INTO servers VALUES (?, ?, ?)", (ip, port, timestamp))
-        send_webhook(ip, port)
+        # send_webhook(ip, port)
         conn.commit()
     conn.close()
 
