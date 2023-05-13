@@ -81,13 +81,26 @@ async def list_servers(ctx: commands.Context):
     c.execute("SELECT ip, port FROM servers")
     servers = [row for row in c.fetchall()]
     conn.close()
-    # Create inline embed with all servers
-    embed = discord.Embed(title='Servers', description='All servers in the database', color=0x00ff00)
-    serverCount = 0
-    for server in servers:
-        serverCount += 1
-        embed.add_field(name=f'Server {serverCount}', value=f'IP: {server[0]}\nPort: {server[1]}', inline=True)
-    await ctx.send(embed=embed)
+
+    # Create a list to hold embeds
+    embeds = []
+
+    # Split servers into chunks to fit within embeds
+    chunk_size = 10  # Adjust as needed
+    server_chunks = [servers[i:i+chunk_size] for i in range(0, len(servers), chunk_size)]
+
+    # Create embeds for each chunk of servers
+    for i, chunk in enumerate(server_chunks):
+        embed = discord.Embed(title='Servers', description='All servers in the database', color=0x00ff00)
+        for j, server in enumerate(chunk):
+            server_number = i * chunk_size + j + 1
+            embed.add_field(name=f'Server {server_number}', value=f'IP: {server[0]}\nPort: {server[1]}', inline=True)
+        embeds.append(embed)
+
+    # Send embeds as separate messages
+    for embed in embeds:
+        await ctx.send(embed=embed)
+
 
 ### fullScan command
 @client.command(name='fullScan', description='Scan all subnets in the database')
