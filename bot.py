@@ -5,9 +5,11 @@ import os
 import dotenv
 import time
 
-from main import fullScan
+from scan import fullScan
 
 # Variables
+
+### MUST FIX DATABASE LOCKING ISSUE - CREATE DATABASE HANDLER
 dotenv.load_dotenv()
 webhook_url = os.getenv('WEBHOOK_URL')
 token = os.getenv('DISCORD_TOKEN')
