@@ -2,7 +2,7 @@
 Minecraft Server Scraper with Discord implementation
 ⚠ This is for educational purposes. I'm not responsible for how you use this ;) ⚠
 
-## This is currently wip. The basic foundation of this was created within 45 minutes. Code will be cleaned once the bot works as intended
+This is currently wip. The basic foundation of this was created within 45 minutes. Code will be cleaned once the bot works as intended
 
 ![DiscordCanary_WNAcoM80tt](https://github.com/faderzz/herobrine/assets/58748338/d64417b5-d142-4166-9ba8-eb55d87d00f8)
 ![DiscordCanary_KWnee2oN6k](https://github.com/faderzz/herobrine/assets/58748338/d36aa494-dade-41da-9e7b-e458094246a1)
@@ -32,3 +32,12 @@ DISCORD_TOKEN=your_token_here
 MC_BEARER_TOKEN=your_token_here
 WEBHOOK_URL=your_webhook_url_here
 ```
+
+# To-do:
+- Server search feature
+- Player search feature
+- Server info feature
+- Auto-join with an account
+- Auto message features
+- World mapping
+- Discord bridge
